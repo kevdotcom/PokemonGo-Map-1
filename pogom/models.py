@@ -1271,7 +1271,7 @@ class SpawnpointDetectionData(BaseModel):
     @classmethod
     def classify(cls, sp, scan_loc, now_secs, sighting=None):
 
-        # To reduce CPU usage, give an intial reading of 15 minunte spawns if
+        # To reduce CPU usage, give an intial reading of 15 minute spawns if
         # not done with initial scan of location.
         if not scan_loc['done']:
             sp['kind'] = 'hhhs'

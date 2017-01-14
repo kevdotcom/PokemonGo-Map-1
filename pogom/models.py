@@ -1744,7 +1744,7 @@ def parse_map(args, map_dict, step_location, db_update_queue, wh_update_queue,
     if forts and (config['parse_pokestops'] or config['parse_gyms']):
         if config['parse_pokestops']:
             stop_ids = [f['id'] for f in forts if f.get('type') == 1]
-            if len(stop_ids) > 0:
+            if stop_ids:
                 query = (Pokestop
                          .select(Pokestop.pokestop_id, Pokestop.last_modified)
                          .where((Pokestop.pokestop_id << stop_ids))
@@ -2024,11 +2024,11 @@ def parse_gyms(args, gym_responses, wh_update_queue, db_update_queue):
     # non-atomic state.
 
     # Upsert all the models.
-    if len(gym_details):
+    if gym_details:
         db_update_queue.put((GymDetails, gym_details))
-    if len(gym_pokemon):
+    if gym_pokemon:
         db_update_queue.put((GymPokemon, gym_pokemon))
-    if len(trainers):
+    if trainers:
         db_update_queue.put((Trainer, trainers))
 
     # This needs to be completed in a transaction, because we don't wany any
@@ -2036,12 +2036,12 @@ def parse_gyms(args, gym_responses, wh_update_queue, db_update_queue):
     # updating while we're updating the bridge table.
     with flaskDb.database.transaction():
         # Get rid of all the gym members, we're going to insert new records.
-        if len(gym_details):
+        if gym_details:
             DeleteQuery(GymMember).where(
                 GymMember.gym_id << gym_details.keys()).execute()
 
         # Insert new gym members.
-        if len(gym_members):
+        if gym_members:
             db_update_queue.put((GymMember, gym_members))
 
     log.info('Upserted gyms: %d, gym members: %d.',

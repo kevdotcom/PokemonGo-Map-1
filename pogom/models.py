@@ -47,8 +47,8 @@ def init_database(app):
         log.info('Connecting to MySQL database on %s:%i...',
                  args.db_host, args.db_port)
         connections = args.db_max_connections
-        if hasattr(args, 'accounts'):
-            connections *= len(args.accounts)
+        if args.workers > 0:
+            connections *= args.workers * args.workers_per_hive
         db = MyRetryDB(
             args.db_name,
             user=args.db_user,

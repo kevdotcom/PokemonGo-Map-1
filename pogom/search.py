@@ -721,6 +721,7 @@ def search_worker_thread(args, account_queue, account_failures, search_items_que
                                 status['message'] = 'Account {} is encountering a captcha, starting 2captcha sequence.'.format(account['username'])
                             else:
                                 status['message'] = 'Account {} is encountering a captcha, starting manual captcha solving.'.format(account['username'])
+                                whq.put(('captcha', {'account': account['username'], 'status': 'encounter', 'token_needed': '1'}))
                             log.warning(status['message'])
                             captcha_token = token_request(args, status, captcha_url, whq)
                             if 'ERROR' in captcha_token:
@@ -729,15 +730,20 @@ def search_worker_thread(args, account_queue, account_failures, search_items_que
                                 account_failures.append({'account': account, 'last_fail_time': now(
                                 ), 'reason': 'captcha failed to verify'})
                                 break
+                            elif 'TIMEOUT' in captcha_token:
+                                log.warning("Unable to resolve captcha, timeout waiting for manual captcha token.")
+                                account_failures.append({'account': account, 'last_fail_time': now(), 'reason': 'timeout waiting for manual captcha token'})
+                                captchad = 0
+                                whq.put(('captcha', {'account': account['username'], 'status': 'timeout', 'token_needed': '0'}))
+                                break
                             else:
-                                status['message'] = 'Retrieved captcha token, attempting to verify challenge for {}.'.format(account[
-                                                                                                                             'username'])
+                                status['message'] = 'Retrieved captcha token, attempting to verify challenge for {}.'.format(account['username'])
                                 log.info(status['message'])
                                 response = api.verify_challenge(
                                     token=captcha_token)
                                 if 'success' in response['responses']['VERIFY_CHALLENGE']:
-                                    status['message'] = "Account {} successfully uncaptcha'd.".format(account[
-                                                                                                      'username'])
+                                    status['message'] = "Account {} successfully uncaptcha'd.".format(account['username'])
+                                    whq.put(('captcha', {'account': account['username'], 'status': 'solved', 'token_needed': '0'}))
                                     log.info(status['message'])
                                     scan_date = datetime.utcnow()
                                     # Make another request for the same
@@ -747,8 +753,8 @@ def search_worker_thread(args, account_queue, account_failures, search_items_que
                                         api, step_location, args.no_jitter)
                                     status['last_scan_date'] = datetime.utcnow()
                                 else:
-                                    status['message'] = "Account {} failed verifyChallenge, putting away account for now.".format(account[
-                                                                                                                                  'username'])
+                                    status['message'] = "Account {} failed verifyChallenge, putting away account for now.".format(account['username'])
+                                    whq.put(('captcha', {'account': account['username'], 'status': 'failed', 'token_needed': '0'}))
                                     log.info(status['message'])
                                     account_failures.append({'account': account, 'last_fail_time': now(
                                     ), 'reason': 'captcha failed to verify'})

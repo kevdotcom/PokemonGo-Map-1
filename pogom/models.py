@@ -227,8 +227,9 @@ class Pokemon(BaseModel):
                          Pokemon.latitude,
                          Pokemon.longitude,
                          pokemon_count_query.c.count)
-                 .join(pokemon_count_query, on=(
-                    Pokemon.pokemon_id == pokemon_count_query.c.pokemon_id))
+                 .join(pokemon_count_query,
+                       on=(Pokemon.pokemon_id ==
+                           pokemon_count_query.c.pokemon_id))
                  .distinct()
                  .where(Pokemon.disappear_time ==
                         pokemon_count_query.c.lastappeared)
@@ -1641,7 +1642,7 @@ def parse_map(args, map_dict, step_location, db_update_queue, wh_update_queue,
             scan_spawn_points[scan_loc['cellid'] +
                               sp['id']] = {'spawnpoint': sp['id'],
                                            'scannedlocation': scan_loc[
-                                                'cellid']}
+                                               'cellid']}
             if not sp['last_scanned']:
                 log.info('New Spawn Point found.')
                 new_spawn_points.append(sp)

@@ -966,8 +966,6 @@ def token_request(args, status, url, whq):
 
     if args.captcha_key is None:
         token_needed += 1
-        if args.webhooks:
-            whq.put(('token_needed', {"num": token_needed}))
         while request_time + timedelta(seconds=args.manual_captcha_solving_allowance_time) > datetime.utcnow():
             tokenLock.acquire()
             if args.no_server:
@@ -985,14 +983,10 @@ def token_request(args, status, url, whq):
             tokenLock.release()
             if token != "":
                 token_needed -= 1
-                if args.webhooks:
-                    whq.put(('token_needed', {"num": token_needed}))
                 return token
             time.sleep(1)
         token_needed -= 1
-        if args.webhooks:
-            whq.put(('token_needed', {"num": token_needed}))
-        return 'ERROR'
+        return 'TIMEOUT'
 
     s = requests.Session()
     # Fetch the CAPTCHA_ID from 2captcha.

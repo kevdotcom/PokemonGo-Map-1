@@ -41,9 +41,7 @@ def send_to_webhook(message_type, message, scheduler_name, tth_found):
 
     data = {
         'type': message_type,
-        'message': message,
-        'scheduler_name': scheduler_name,
-        'tth_found': tth_found
+        'message': message
     }
 
     for w in args.webhooks:
@@ -60,7 +58,7 @@ def wh_updater(args, queue, key_cache):
     while True:
         try:
             # Loop the queue.
-            whtype, message, scheduler_name, tth_found = queue.get()
+            whtype, message = queue.get()
 
             # Extract the proper identifier.
             ident_fields = {

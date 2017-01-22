@@ -320,7 +320,8 @@ def captcha_overseer_thread(args, account_queue, captcha_queue, wh_queue):
                 t.daemon = True
                 t.start()
 
-        solveId =+ 1
+                solveId =+ 1
+
         if solveId > 999:
             solveId = 0
 

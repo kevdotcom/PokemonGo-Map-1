@@ -363,7 +363,7 @@ def captcha_solving_thread(args, account_queue, captcha_queue, status, whq):
     if 'success' in response['responses']['VERIFY_CHALLENGE']:
         log.info("Account {} successfully uncaptcha'd, returning to active duty.".format(account['username']))
         account_queue.put(account)
-        if args.webhook:
+        if args.webhooks:
             whq.put(('captcha', {'account': account['username'], 'status': 'solved', 'token_needed': '0'}))
     else:
         log.info("Account {} failed verifyChallenge, putting back in captcha queue.".format(account['username']))
@@ -914,7 +914,7 @@ def search_worker_thread(args, account_queue, account_failures, search_items_que
                             else:
                                 status['message'] = 'Account {} is encountering a captcha, starting manual captcha solving.'.format(account['username'])
                                 log.info('Account {} is encountering a captcha, starting manual captcha solving.'.format(account['username']))
-                                if args.webhook:
+                                if args.webhooks:
                                     whq.put(('captcha', {'account': account['username'], 'status': 'encounter', 'token_needed': '1'}))
                                 captcha_queue.put({'account': account, 'last_step': step_location, 'captcha_url': captcha_url})
                                 break

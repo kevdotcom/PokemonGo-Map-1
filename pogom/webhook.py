@@ -91,8 +91,7 @@ def wh_updater(args, queue, key_cache):
                     # data to webhooks.
                     if __wh_object_changed(whtype, key_cache[ident], message):
                         key_cache[ident] = message
-                        send_to_webhook(whtype, message,
-                                        scheduler_name, tth_found)
+                        send_to_webhook(whtype, message)
                         log.debug('Sending updated %s to webhook: %s.',
                                   whtype, ident)
                     else:

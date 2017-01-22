@@ -368,6 +368,8 @@ def captcha_solving_thread(args, account_queue, captcha_queue, status, whq):
     else:
         log.info("Account {} failed verifyChallenge, putting back in captcha queue.".format(account['username']))
         captcha_queue.put({'account': account, 'last_step': step_location})
+        if args.webhooks:
+            whq.put(('captcha', {'account': account['username'], 'status': 'failed', 'token_needed': '1'}))
 
 # The main search loop that keeps an eye on the over all process.
 def search_overseer_thread(args, new_location_queue, pause_bit, heartb, db_updates_queue, wh_queue):

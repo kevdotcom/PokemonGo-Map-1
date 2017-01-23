@@ -307,7 +307,6 @@ def captcha_overseer_thread(args, account_queue, captcha_queue):
                     'message': 'Creating captcha solving thread...',
                     'account': captcha['account'],
                     'location': captcha['last_step'],
-                    'captcha_url': captcha['captcha_url'],
                     'token':  tokens[i]
                 }
 
@@ -328,7 +327,6 @@ def captcha_solving_thread(args, account_queue, captcha_queue, status):
 
     account = status['account']
     location = status['location']
-    captcha_url = status['captcha_url']
     captcha_token = status['token']
 
     status['message'] = 'Waking up account {} to verify captcha token: {}'.format(account['username'], captcha_token)
@@ -909,8 +907,7 @@ def search_worker_thread(args, account_queue, account_failures, captcha_queue, s
                                 log.info(status['message'])
                                 account_queue.task_done()
                                 captcha_queue.put({'account': account,
-                                                   'last_step': step_location,
-                                                   'captcha_url': captcha_url})
+                                                   'last_step': step_location})
                                 time.sleep(5)
                                 break
 

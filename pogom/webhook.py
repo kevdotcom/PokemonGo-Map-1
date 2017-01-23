@@ -10,7 +10,7 @@ from requests.adapters import HTTPAdapter
 log = logging.getLogger(__name__)
 
 
-def send_to_webhook(message_type, message, scheduler_name, tth_found):
+def send_to_webhook(message_type, message):
     args = get_args()
 
     if not args.webhooks:
@@ -41,9 +41,7 @@ def send_to_webhook(message_type, message, scheduler_name, tth_found):
 
     data = {
         'type': message_type,
-        'message': message,
-        'scheduler_name': scheduler_name,
-        'tth_found': tth_found
+        'message': message
     }
 
     for w in args.webhooks:
@@ -80,11 +78,11 @@ def wh_updater(args, queue, key_cache):
                     # as-is.
                     log.debug(
                         'Sending webhook item of unknown type: %s.', whtype)
-                    send_to_webhook(whtype, message, scheduler_name, tth_found)
+                    send_to_webhook(whtype, message)
                 elif ident not in key_cache:
                     key_cache[ident] = message
                     log.debug('Sending %s to webhook: %s.', whtype, ident)
-                    send_to_webhook(whtype, message, scheduler_name, tth_found)
+                    send_to_webhook(whtype, message)
                 else:
                     # Make sure to call key_cache[ident] in all branches so it
                     # updates the LFU usage count.
@@ -103,7 +101,7 @@ def wh_updater(args, queue, key_cache):
             except KeyError as ex:
                 log.debug(
                     'LFUCache thread unsafe exception: %s. Requeuing.', repr(ex))
-                queue.put((whtype, message, scheduler_name, tth_found))
+                queue.put((whtype, message))
 
             # Webhook queue moving too slow.
             if queue.qsize() > 50:

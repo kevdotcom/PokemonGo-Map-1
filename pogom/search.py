@@ -285,7 +285,7 @@ def worker_status_db_thread(threads_status, name, db_updates_queue):
             db_updates_queue.put((WorkerStatus, workers))
         time.sleep(3)
 
-def captcha_overseer_thread(args, account_queue, captcha_queue):
+def captcha_overseer_thread(args, account_queue, captcha_queue, wh_queue):
     solverId = 0
     captchaStatus = {}
 
@@ -313,7 +313,7 @@ def captcha_overseer_thread(args, account_queue, captcha_queue):
                 t = Thread(target=captcha_solving_thread,
                            name='captcha-solver-{}'.format(solverId),
                            args=(args, account_queue, captcha_queue,
-                                 captchaStatus[solverId]))
+                                 captchaStatus[solverId], wh_queue))
                 t.daemon = True
                 t.start()
 
@@ -324,7 +324,7 @@ def captcha_overseer_thread(args, account_queue, captcha_queue):
                 time.sleep(1)
 
 
-def captcha_solving_thread(args, account_queue, captcha_queue, status):
+def captcha_solving_thread(args, account_queue, captcha_queue, status, whq):
 
     account = status['account']
     location = status['location']
@@ -357,10 +357,14 @@ def captcha_solving_thread(args, account_queue, captcha_queue, status):
     if 'success' in response['responses']['VERIFY_CHALLENGE']:
         status['message'] = "Account {} successfully uncaptcha'd, returning to active duty.".format(account['username'])
         log.info(status['message'])
+        if args.webhooks:
+            whq.put(('captcha', {'account': account['username'], 'status': 'solved', 'token_needed': '0'}))
         account_queue.put(account)
     else:
         status['message'] = 'Account {} failed verifyChallenge, putting back in captcha queue.'.format(account['username'])
         log.warning(status['message'])
+        if args.webhooks:
+            whq.put(('captcha', {'account': account['username'], 'status': 'failed', 'token_needed': '1'}))
         captcha_queue.put({'account': account, 'last_step': location})
 
 # The main search loop that keeps an eye on the over all process.
@@ -418,7 +422,7 @@ def search_overseer_thread(args, new_location_queue, pause_bit, heartb, db_updat
     # Create captcha overseer thread.
     log.info('Starting captcha overseer thread...')
     t = Thread(target=captcha_overseer_thread, name='captcha-overseer',
-               args=(args, account_queue, captcha_queue))
+               args=(args, account_queue, captcha_queue, wh_queue))
     t.daemon = True
     t.start()
 
@@ -906,6 +910,8 @@ def search_worker_thread(args, account_queue, account_failures, captcha_queue, s
                             if args.captcha_key is None:
                                 status['message'] = 'Account {} is waiting for manual captcha solving.'.format(account['username'])
                                 log.info(status['message'])
+                                if args.webhooks:
+                                    whq.put(('captcha', {'account': account['username'], 'status': 'encounter', 'token_needed': '1'}))
                                 account_queue.task_done()
                                 captcha_queue.put({'account': account,
                                                    'last_step': step_location})

@@ -291,7 +291,7 @@ def captcha_overseer_thread(args, account_queue, captcha_queue):
 
     while True:
         # Run once every 30 seconds.
-        time.sleep(30)
+        time.sleep(15)
 
         tokens_needed = captcha_queue.qsize()
         if tokens_needed > 0:
@@ -321,6 +321,7 @@ def captcha_overseer_thread(args, account_queue, captcha_queue):
                 solverId += 1
                 if solverId > 999:
                     solverId = 0
+                time.sleep(1)
 
 
 def captcha_solving_thread(args, account_queue, captcha_queue, status):
@@ -329,7 +330,7 @@ def captcha_solving_thread(args, account_queue, captcha_queue, status):
     location = status['location']
     captcha_token = status['token']
 
-    status['message'] = 'Waking up account {} to verify captcha token: {}'.format(account['username'], captcha_token)
+    status['message'] = 'Waking up account {} to verify captcha.'.format(account['username'])
     log.info(status['message'])
 
     if args.mock != '':
@@ -360,7 +361,7 @@ def captcha_solving_thread(args, account_queue, captcha_queue, status):
     else:
         status['message'] = 'Account {} failed verifyChallenge, maybe bad/experired token.'.format(account['username'])
         log.warning(status['message'])
-        captcha_queue.put({'account': account, 'last_step': location, 'captcha_url': captcha_url})
+        captcha_queue.put({'account': account, 'last_step': location})
 
 # The main search loop that keeps an eye on the over all process.
 def search_overseer_thread(args, new_location_queue, pause_bit, heartb, db_updates_queue, wh_queue):

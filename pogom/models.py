@@ -1564,8 +1564,8 @@ class Token(flaskDb.Model):
     last_updated = DateTimeField(default=datetime.utcnow)
 
     @staticmethod
-    def get_valid(limit=10):
-        valid_time = datetime.utcnow() - timedelta(seconds=30)
+    def get_valid(limit=15):
+        valid_time = (datetime.utcnow() - timedelta(seconds=30))
         token_ids = []
         tokens = []
         with flaskDb.database.transaction():

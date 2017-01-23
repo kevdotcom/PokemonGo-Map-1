@@ -359,7 +359,7 @@ def captcha_solving_thread(args, account_queue, captcha_queue, status):
         log.info(status['message'])
         account_queue.put(account)
     else:
-        status['message'] = 'Account {} failed verifyChallenge, maybe bad/experired token.'.format(account['username'])
+        status['message'] = 'Account {} failed verifyChallenge, putting back in captcha queue.'.format(account['username'])
         log.warning(status['message'])
         captcha_queue.put({'account': account, 'last_step': location})
 

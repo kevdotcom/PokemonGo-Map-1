@@ -58,7 +58,7 @@ def wh_updater(args, queue, key_cache):
     while True:
         try:
             # Loop the queue.
-            whtype, message, scheduler_name, tth_found = queue.get()
+            whtype, message = queue.get()
 
             # Extract the proper identifier.
             ident_fields = {

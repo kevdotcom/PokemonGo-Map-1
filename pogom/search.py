@@ -295,7 +295,7 @@ def captcha_overseer_thread(args, account_queue, captcha_queue, wh_queue):
 
         tokens_needed = captcha_queue.qsize()
         if tokens_needed > 0:
-            tokens = Token.get_valid()
+            tokens = Token.get_valid(tokens_needed)
             tokens_available = len(tokens)
             solvers = min(tokens_needed, tokens_available)
             log.info('Accounts on hold with captcha: %d - tokens available: %d',

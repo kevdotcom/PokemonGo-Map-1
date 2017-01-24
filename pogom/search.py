@@ -386,6 +386,7 @@ def search_overseer_thread(args, new_location_queue, pause_bit, heartb, db_updat
     prevent accounts from being cycled through too quickly.
     '''
     for i, account in enumerate(args.accounts):
+        wh_queue.put(('captcha', {'account': account['username'], 'status': 'initializing', 'token_needed': '0'}))
         account_queue.put(account)
 
     # Create a list for failed accounts.

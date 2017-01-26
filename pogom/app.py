@@ -52,8 +52,8 @@ class Pogom(Flask):
         return self.send_static_file('1x1.gif')
 
     def render_inject_js(self):
-        solve_domain = "dapogo.de/go"
-        return render_template("inject.js", domain=solve_domain)
+        args = get_args()
+        return render_template("inject.js", domain=args.manual_captcha_solving_domain)
 
     def set_search_control(self, control):
         self.search_control = control

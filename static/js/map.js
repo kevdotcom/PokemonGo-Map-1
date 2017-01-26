@@ -237,7 +237,7 @@ function createLocationMarker() {
     })
 
     locationMarker.infoWindow = new google.maps.InfoWindow({
-        content: '<div><b>My Location</b></div>',
+        content: '<div><b>Mein Standort</b></div>',
         disableAutoPan: true
     })
 
@@ -278,7 +278,7 @@ function createSearchMarker() {
     })
 
     searchMarker.infoWindow = new google.maps.InfoWindow({
-        content: '<div><b>Search Location</b></div>',
+        content: '<div><b>Scanbereich</b></div>',
         disableAutoPan: true
     })
 
@@ -391,7 +391,7 @@ function pokemonLabel(name, rarity, types, disappearTime, id, latitude, longitud
                 IV: ${iv.toFixed(1)}% (${atk}/${def}/${sta})
             </div>
             <div>
-                Moves: ${i8ln(moves[move1]['name'])} / ${i8ln(moves[move2]['name'])}
+                Attacken: ${i8ln(moves[move1]['name'])} / ${i8ln(moves[move2]['name'])}
             </div>
             `
     }
@@ -400,25 +400,24 @@ function pokemonLabel(name, rarity, types, disappearTime, id, latitude, longitud
             <b>${name}</b>
             <span> - </span>
             <small>
-                <a href='http://www.pokemon.com/us/pokedex/${id}' target='_blank' title='View in Pokedex'>#${id}</a>
+                <a href='https://pokemon.gameinfo.io/de/pokemon/${id}' target='_blank' title='Im Pokedex anzeigen'>#${id}</a>
             </small>
             <span> ${rarityDisplay}</span>
             <span> - </span>
             <small>${typesDisplay}</small>
         </div>
         <div>
-            Disappears at ${pad(disappearDate.getHours())}:${pad(disappearDate.getMinutes())}:${pad(disappearDate.getSeconds())}
+            Verschwindet um ${pad(disappearDate.getHours())}:${pad(disappearDate.getMinutes())}:${pad(disappearDate.getSeconds())}
             (<span class='label-countdown' disappears-at='${disappearTime}'>00:00</span>)
         </div>
         <div>
-            Location: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
+            Ort: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
         </div>
             ${details}
         <div>
-            <a href='javascript:excludePokemon(${id})'>Exclude</a>&nbsp;&nbsp
-            <a href='javascript:notifyAboutPokemon(${id})'>Notify</a>&nbsp;&nbsp
-            <a href='javascript:removePokemonMarker("${encounterId}")'>Remove</a>&nbsp;&nbsp
-            <a href='javascript:void(0);' onclick='javascript:openMapDirections(${latitude},${longitude});' title='View in Maps'>Get directions</a>
+            <a href='javascript:excludePokemon(${id})'>Verstecken</a>&nbsp;&nbsp
+            <a href='javascript:notifyAboutPokemon(${id})'>Benachrichtigen</a>&nbsp;&nbsp
+            <a href='javascript:void(0);' onclick='javascript:openMapDirections(${latitude},${longitude});' title='In Maps anzeigen'>Route</a>
         </div>`
     return contentstring
 }
@@ -443,7 +442,7 @@ function gymLabel(teamName, teamId, gymPoints, latitude, longitude, lastScanned 
     var directionsStr = ''
     if (!Store.get('useGymSidebar')) {
         directionsStr = `<div>
-                <a href='javascript:void(0);' onclick='javascript:openMapDirections(${latitude},${longitude});' title='View in Maps'>Get directions</a>
+                <a href='javascript:void(0);' onclick='javascript:openMapDirections(${latitude},${longitude});' title='In Maps anzeigen'>Route berechnen</a>
             </div>`
     }
 
@@ -461,10 +460,10 @@ function gymLabel(teamName, teamId, gymPoints, latitude, longitude, lastScanned 
                     </div>
                     ${nameStr}
                     <div>
-                        Location: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
+                        Ort: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
                     </div>
                     <div>
-                        Last Scanned: ${lastScannedStr}
+                        Zuletzt gescannt: ${lastScannedStr}
                     </div>
                     ${directionsStr}
                 </center>
@@ -475,7 +474,7 @@ function gymLabel(teamName, teamId, gymPoints, latitude, longitude, lastScanned 
             <div>
                 <center>
                     <div style='padding-bottom: 2px'>
-                        Gym owned by:
+                        Arena gehört:
                     </div>
                     <div>
                         <b style='color:rgba(${gymColor[teamId]})'>Team ${teamName}</b><br>
@@ -491,10 +490,10 @@ function gymLabel(teamName, teamId, gymPoints, latitude, longitude, lastScanned 
                         ${memberStr}
                     </div>
                     <div>
-                        Location: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
+                        Ort: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
                     </div>
                     <div>
-                        Last Scanned: ${lastScannedStr}
+                        Zuletzt gescannt: ${lastScannedStr}
                     </div>
                     ${directionsStr}
                 </center>
@@ -520,17 +519,17 @@ function pokestopLabel(expireTime, latitude, longitude) {
 
         str = `
             <div>
-                <b>Lured Pokéstop</b>
+                <b>Pokéstop mit Lockmodul</b>
             </div>
             <div>
-                Lure expires at ${pad(expireDate.getHours())}:${pad(expireDate.getMinutes())}:${pad(expireDate.getSeconds())}
+                Lockmodul aktiv bis ${pad(expireDate.getHours())}:${pad(expireDate.getMinutes())}:${pad(expireDate.getSeconds())}
                 (<span class='label-countdown' disappears-at='${expireTime}'>00:00</span>)
             </div>
             <div>
-                Location: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
+                Ort: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
             </div>
             <div>
-                <a href='javascript:void(0);' onclick='javascript:openMapDirections(${latitude},${longitude});' title='View in Maps'>Get directions</a>
+                <a href='javascript:void(0);' onclick='javascript:openMapDirections(${latitude},${longitude});' title='View in Maps'>Route</a>
             </div>`
     } else {
         str = `
@@ -538,10 +537,10 @@ function pokestopLabel(expireTime, latitude, longitude) {
                 <b>Pokéstop</b>
             </div>
             <div>
-                Location: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
+                Ort: ${latitude.toFixed(6)}, ${longitude.toFixed(7)}
             </div>
             <div>
-                <a href='javascript:void(0);' onclick='javascript:openMapDirections(${latitude},${longitude});' title='View in Maps'>Get directions</a>
+                <a href='javascript:void(0);' onclick='javascript:openMapDirections(${latitude},${longitude});' title='View in Maps'>Route</a>
             </div>`
     }
 
@@ -557,16 +556,16 @@ function formatSpawnTime(seconds) {
 function spawnpointLabel(item) {
     var str = `
         <div>
-            <b>Spawn Point</b>
+            <b>Spawnpunkt</b>
         </div>
         <div>
-            Every hour from ${formatSpawnTime(item.time)} to ${formatSpawnTime(item.time + 900)}
+            Jede Stunde von ${formatSpawnTime(item.time)} to ${formatSpawnTime(item.time + 900)}.
         </div>`
 
     if (item.special) {
         str += `
             <div>
-                May appear as early as ${formatSpawnTime(item.time - 1800)}
+                Könnte schon um ${formatSpawnTime(item.time - 1800)} auftauchen.
             </div>`
     }
     return str
@@ -639,7 +638,7 @@ function customizePokemonMarker(marker, item, skipNotification) {
             if (Store.get('playSound')) {
                 audio.play()
             }
-            sendNotification('A wild ' + item['pokemon_name'] + ' appeared!', 'Click to load map', 'static/icons/' + item['pokemon_id'] + '.png', item['latitude'], item['longitude'])
+            sendNotification('Ein wildes ' + item['pokemon_name'] + ' ist aufgetaucht!', 'Klick hier um die Karte zu laden.', 'static/icons/' + item['pokemon_id'] + '.png', item['latitude'], item['longitude'])
         }
         if (marker.animationDisabled !== true) {
             marker.setAnimation(google.maps.Animation.BOUNCE)
@@ -653,7 +652,7 @@ function customizePokemonMarker(marker, item, skipNotification) {
                 if (Store.get('playSound')) {
                     audio.play()
                 }
-                sendNotification('A ' + perfection.toFixed(1) + '% perfect ' + item['pokemon_name'] + ' appeared!', 'Click to load map', 'static/icons/' + item['pokemon_id'] + '.png', item['latitude'], item['longitude'])
+                sendNotification('A ' + perfection.toFixed(1) + '% perfektes ' + item['pokemon_name'] + ' aufgetaucht!', 'Klick hier um die Karte zu laden.', 'static/icons/' + item['pokemon_id'] + '.png', item['latitude'], item['longitude'])
             }
             if (marker.animationDisabled !== true) {
                 marker.setAnimation(google.maps.Animation.BOUNCE)
@@ -1056,10 +1055,10 @@ function loadRawData() {
         error: function () {
             if (!$timeoutDialog) {
                 var opts = {
-                    title: 'Reduce marker settings'
+                    title: 'Zeitüberschreitung.'
                 }
 
-                $timeoutDialog = $('<div>Hmm... we\'re having problems getting data for your criteria. Try reducing what you\'re showing and zooming in to limit what\'s returned.</div>').dialog(opts)
+                $timeoutDialog = $("<div>Hmm... wir haben Probleme alle Pokémon zu laden. Versuch' einige Pokémon zu verstecken oder weiter rein zu zoomen.</div>").dialog(opts)
                 $timeoutDialog.dialog('open')
             } else if (!$timeoutDialog.dialog('isOpen')) {
                 $timeoutDialog.dialog('open')

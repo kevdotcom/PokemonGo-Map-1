@@ -64,9 +64,9 @@ function addElement(pokemonId, name) {
 
     jQuery('<a/>', {
         id: 'link_' + pokemonId,
-        href: 'http://www.pokemon.com/us/pokedex/' + pokemonId,
+        href: 'https://pokemon.gameinfo.io/de/pokemon/' + pokemonId,
         target: '_blank',
-        title: 'View in Pokedex',
+        title: 'Im Pokédex anzeigen',
         text: name
     }).appendTo('#name_' + pokemonId)
 
@@ -93,7 +93,7 @@ function addElement(pokemonId, name) {
     jQuery('<a/>', {
         href: 'javascript:void(0);',
         onclick: 'javascript:showOverlay(' + pokemonId + ');',
-        text: 'All Locations'
+        text: 'Alle Orte'
     }).appendTo('#seen_' + pokemonId + '_details')
 }
 
@@ -145,9 +145,9 @@ function processSeen(seen) {
         if (!$('#seen_' + item['pokemon_id']).length) {
             addElement(item['pokemon_id'], item['pokemon_name'])
         }
-        $('#count_' + item['pokemon_id']).html('<strong>Seen:</strong> ' + item['count'].toLocaleString() + ' (' + percentage + '%)')
-        $('#lastseen_' + item['pokemon_id']).html('<strong>Last Seen:</strong> ' + lastSeen)
-        $('#location_' + item['pokemon_id']).html('<strong>Location:</strong> ' + location)
+        $('#count_' + item['pokemon_id']).html('<strong>Gesehen:</strong> ' + item['count'].toLocaleString() + ' (' + percentage + '%)')
+        $('#lastseen_' + item['pokemon_id']).html('<strong>Zuletzt:</strong> ' + lastSeen)
+        $('#location_' + item['pokemon_id']).html('<strong>Ort:</strong> ' + location)
         $('#seen_' + item['pokemon_id']).show()
         // Reverting to classic javascript here as it's supposed to increase performance
         document.getElementById('seen_container').insertBefore(document.getElementById('seen_' + item['pokemon_id']), document.getElementById('seen_container').childNodes[0])
@@ -166,7 +166,7 @@ function processSeen(seen) {
 
 function updateStatMap(firstRun) {
     var duration = document.getElementById('duration')
-    var header = 'Pokemon Seen in ' + duration.options[duration.selectedIndex].text
+    var header = 'Pokemon gefunden in den letzten ' + duration.options[duration.selectedIndex].text
     if ($('#seen_header').html() !== header) {
         $('#seen_container').hide()
         $('#loading').show()
@@ -455,7 +455,7 @@ function appearanceTab(item) {
             times = '<div class="row' + (key % 2) + '">' + saw + '</div>' + times
         })
         return `<div>
-                                <a href="javascript:closeTimes();">Close this tab</a>
+                                <a href="javascript:closeTimes();">Diesen Tab schließen</a>
                         </div>
                         <div class="row1">
                                 <strong>Lat:</strong> ${item['latitude'].toFixed(7)}
@@ -464,9 +464,9 @@ function appearanceTab(item) {
                                 <strong>Long:</strong> ${item['longitude'].toFixed(7)}
                         </div>
                         <div class="row1">
-                            <strong>Appearances:</strong> ${item['count'].toLocaleString()}
+                            <strong>Funde:</strong> ${item['count'].toLocaleString()}
                         </div>
-                        <div class="row0"><strong>Times:</strong></div>
+                        <div class="row0"><strong>Zeiten:</strong></div>
                         <div>
                                 ${times}
                         </div>`

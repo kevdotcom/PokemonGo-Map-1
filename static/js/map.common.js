@@ -847,15 +847,15 @@ var StoreTypes = {
 // set the default parameters for you map here
 var StoreOptions = {
     'map_style': {
-        default: 'roadmap', // roadmap, satellite, hybrid, nolabels_style, dark_style, style_light2, style_pgo, dark_style_nl, style_pgo_day, style_pgo_night, style_pgo_dynamic
+        default: 'style_pgo_dynamic', // roadmap, satellite, hybrid, nolabels_style, dark_style, style_light2, style_pgo, dark_style_nl, style_pgo_day, style_pgo_night, style_pgo_dynamic
         type: StoreTypes.String
     },
     'remember_select_exclude': {
-        default: [],
+        default: [13, 16, 19, 21, 96],
         type: StoreTypes.JSON
     },
     'remember_select_notify': {
-        default: [],
+        default: [3, 6, 9, 130, 131, 142, 143, 149],
         type: StoreTypes.JSON
     },
     'remember_select_rarity_notify': {
@@ -863,7 +863,7 @@ var StoreOptions = {
         type: StoreTypes.JSON
     },
     'remember_text_perfection_notify': {
-        default: '',
+        default: '95',
         type: StoreTypes.Number
     },
     'showGyms': {
@@ -903,7 +903,7 @@ var StoreOptions = {
         type: StoreTypes.Boolean
     },
     'showLuredPokestopsOnly': {
-        default: 0,
+        default: 1,
         type: StoreTypes.Number
     },
     'showScanned': {
@@ -963,15 +963,15 @@ var StoreOptions = {
         type: StoreTypes.String
     },
     'iconSizeModifier': {
-        default: 0,
+        default: 10,
         type: StoreTypes.Number
     },
     'searchMarkerStyle': {
-        default: 'google',
+        default: 'none',
         type: StoreTypes.String
     },
     'locationMarkerStyle': {
-        default: 'none',
+        default: 'red',
         type: StoreTypes.String
     },
     'gymMarkerStyle': {
@@ -979,7 +979,7 @@ var StoreOptions = {
         type: StoreTypes.String
     },
     'zoomLevel': {
-        default: 16,
+        default: 14,
         type: StoreTypes.Number
     }
 }

@@ -5,8 +5,8 @@
   }
 
   #header {
-    background: darken(_palette(accent2, bg), 12);
-    color: _palette(accent2, fg);
+    background: #fafafa;
+    color: #346da6;
     cursor: default;
     height: 3.50em;
     left: 0;
@@ -19,7 +19,7 @@
     @include noSelect();
 
     > h1 {
-      color: _palette(accent2, fg-bold);
+      color: #346da6;
       display: inline-block;
       height: inherit;
       line-height: inherit;
@@ -39,7 +39,7 @@
       text-decoration: none;
 
       &:hover {
-        color: _palette(accent2, fg-bold);
+        color: #8fbbe2;
       }
 
       &[href="#nav"] {

@@ -2,11 +2,11 @@
 <html lang="{{lang}}">
   <head>
     <meta charset="utf-8">
-    <title>Rocket Map</title>
+    <title>DaPoGo Live Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="PokeMap">
+    <meta name="apple-mobile-web-app-title" content="DaPoGo">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#3b3b3b">
     <!-- Fav- & Apple-Touch-Icons -->
@@ -32,19 +32,74 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
     <script src="{{ url_for('static', filename='js/vendor/modernizr.custom.js').lstrip('/') }}"></script>
+    <style type="text/css">
+    #donate {
+      float: right;
+      height: 100%;
+      padding-right: 5px;
+    }
+
+    #donate form {
+      margin: 0 !important;
+      padding: 0 !important;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 14px;
+    }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">
+    setTimeout("initCaptchaUpdate()", 1000);
+    // captcha left update function
+    var update_captcha_left = function() {
+    // get captcha left
+    $.get( "http://5.189.184.212/captcha.php", function( data ) {
+        // show captcha left
+        $('#captcha_left').html('<a href="captcha" target=_blank style="text-decoration: none; color: #346da6; padding: 0;margin: 0;vertical-align: middle;display: inline-block;height: 100%; padding-right: 20%; margin-bottom: 2%; font-size: 80%;font-weight: bold; text-align: center; width: 100%; line-height: 100%;"><span class="label">Captcha:<br>' + data + ' </span></a>');
+    });
+
+    }
+    setTimeout(function() {
+    $(function() {
+    // add captcha counters to web page
+    // $('.content').prepend('<div class="centered-block"><span>Verbleibende Captcha:</span> <span id="captcha_left">-</span></div>');
+    update_captcha_left();
+    });
+    }, 50);
+    // set updating switch to prevent multiple interval calls
+    var captcha_updating = false;
+
+    // init captcha update
+    function initCaptchaUpdate() {
+    // only add one captcha left updater interval
+    if (!captcha_updating) {
+    captcha_updating = true;
+    // update captcha left every 2 sec
+    setInterval(update_captcha_left, 2500);
+    }
+    }
+    </script>
   </head>
   <body id="top">
     <div class="wrapper">
       <!-- Header -->
       <header id="header">
-        <a href="#nav"><span class="label">Options</span></a>
-        <h1><a href="#">Rocket Map</a></h1>
-        <a href="#stats" id="statsToggle" class="statsNav" style="float: right;"><span class="label">Stats</span></a>
+        <a href="#nav" style="float: left;"><span class="label">Optionen</span></a>
+        <h1><a href="#" style="font-size: 1.5em; font-weight: bolder !important;">DaPoGo</a></h1>
+        <div id="donate">
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="hosted_button_id" value="PJPSQJWZNPTNJ">
+            <input type="image" src="https://res.cloudinary.com/rapidweavercommunity/image/upload/s--X1en0IBA--/c_fill,h_200,q_jpegmini,w_200/v1/addons/icons/378829427.png" width="50px" height="50px" border="0" name="submit" alt="Jetzt einfach, schnell und sicher online bezahlen – mit PayPal.">
+            </form>
+        </div>
+        <a href="#stats" id="statsToggle" class="statsNav" style="float: right;"><span class="label">Statistik</span></a>
+        <div id="captcha_left" class="label" style="float: right; font: inherit; "></div>
       </header>
       <!-- NAV -->
       <nav id="nav">
         <div id="nav-accordion">
-          <h3>Marker Settings</h3>
+          <h3>Icons</h3>
           <div>
             <div class="form-control switch-container">
               <h3>Pokémon</h3>
@@ -57,7 +112,7 @@
               </div>
             </div>
             <div class="form-control switch-container">
-              <h3>Gyms</h3>
+              <h3>Arenen</h3>
               <div class="onoffswitch">
                 <input id="gyms-switch" type="checkbox" name="gyms-switch" class="onoffswitch-checkbox" checked>
                 <label class="onoffswitch-label" for="gyms-switch">
@@ -67,7 +122,7 @@
               </div>
             </div>
             <div class="form-control switch-container" id="gym-sidebar-wrapper" style="display:none">
-              <h3>Use Gym Sidebar</h3>
+              <h3>Arena-Seitenleiste</h3>
               <div class="onoffswitch">
                 <input id="gym-sidebar-switch" type="checkbox" name="gym-sidebar-switch" class="onoffswitch-checkbox" checked>
                 <label class="onoffswitch-label" for="gym-sidebar-switch">
@@ -80,24 +135,24 @@
               <div class="form-control switch-container" id="team-gyms-only-wrapper">
                 <h3>Team</h3>
                 <select name="team-gyms-filter-switch" id="team-gyms-only-switch">
-                  <option value="0">All</option>
-                  <option value="1">Mystic</option>
-                  <option value="2">Valor</option>
-                  <option value="3">Instinct</option>
+                  <option value="0">Alle</option>
+                  <option value="1">Weisheit</option>
+                  <option value="2">Wagemut</option>
+                  <option value="3">Intuition</option>
                 </select>
               </div>
               <div class="form-control switch-container" id="open-gyms-only-wrapper">
-                <h3>Open Spot</h3>
+                <h3>Freier Platz</h3>
                 <select name="open-gyms-only-switch" id="open-gyms-only-switch">
-                  <option value="0">All</option>
-                  <option value="1">Open Spot</option>
-                  <option value="2">&lt;= 1000 Prestige Until Open Spot</option>
-                  <option value="3">&lt;= 2500 Prestige Until Open Spot</option>
-                  <option value="4">&lt;= 5000 Prestige Until Open Spot</option>
+                  <option value="0">Alle</option>
+                  <option value="1">Feier Platz</option>
+                  <option value="2">&lt;= 1000 Prestige bis ein Platz frei wird</option>
+                  <option value="3">&lt;= 2500 Prestige bis ein Platz frei wird</option>
+                  <option value="4">&lt;= 5000 Prestige bis ein Platz frei wird</option>
                 </select>
               </div>
               <div class="form-control switch-container" id="min-level-gyms-filter-wrapper">
-                <h3>Minimum Level</h3>
+                <h3>Mindestlevel</h3>
                 <select name="min-level-gyms-filter-switch" id="min-level-gyms-filter-switch">
                   <option value="0">0</option>
                   <option value="1">1</option>
@@ -113,7 +168,7 @@
                 </select>
               </div>
               <div class="form-control switch-container" id="max-level-gyms-filter-wrapper">
-                <h3>Maximum Level</h3>
+                <h3>Höchstlevel</h3>
                 <select name="max-level-gyms-filter-switch" id="max-level-gyms-filter-switch">
                   <option value="0">0</option>
                   <option value="1">1</option>
@@ -129,14 +184,14 @@
                 </select>
               </div>
                <div class="form-control switch-container" id="last-update-gyms-wrapper">
-                 <h3>Last Scan</h3>
+                 <h3>Zuletzt gescannt</h3>
                 <select name="last-update-gyms-switch" id="last-update-gyms-switch">
-                  <option value="0">All</option>
-                  <option value="1">Last Hour</option>
-                  <option value="6">Last 6 Hours</option>
-                  <option value="12">Last 12 Hours</option>
-                  <option value="24">Last 24 Hours</option>
-                  <option value="168">Last Week</option>
+                  <option value="0">Alle</option>
+                  <option value="1">Letzte Stunde</option>
+                  <option value="6">Letzte 6 Stunden</option>
+                  <option value="12">Letzte 12 Stunden</option>
+                  <option value="24">Letzte 24 Stunden</option>
+                  <option value="168">Letzte Woche</option>
                 </select>
               </div>
             </div>
@@ -152,11 +207,11 @@
             </div>
             <div class="form-control switch-container" id="lured-pokestops-only-wrapper" style="display:none">
               <select name="lured-pokestops-only-switch" id="lured-pokestops-only-switch">
-                <option value="0">All</option>
-                <option value="1">Only Lured</option>
+                <option value="0">Alle</option>
+                <option value="1">mit Lockmodul</option>
               </select>
             </div>
-            <div class="form-control switch-container">
+            <!-- <div class="form-control switch-container">
               <h3>Scanned Locations</h3>
               <div class="onoffswitch">
                 <input id="scanned-switch" type="checkbox" name="scanned-switch" class="onoffswitch-checkbox">
@@ -165,9 +220,9 @@
                 <span class="switch-handle"></span>
                 </label>
               </div>
-            </div>
+            </div> -->
             <div class="form-control switch-container">
-              <h3>Spawn Points</h3>
+              <h3>Spawnpunkte</h3>
               <div class="onoffswitch">
                 <input id="spawnpoints-switch" type="checkbox" name="spawnpoints-switch" class="onoffswitch-checkbox">
                 <label class="onoffswitch-label" for="spawnpoints-switch">
@@ -176,7 +231,7 @@
                 </label>
               </div>
             </div>
-            <div class="form-control switch-container">
+            <!-- <div class="form-control switch-container">
               <h3>Ranges</h3>
               <div class="onoffswitch">
                 <input id="ranges-switch" type="checkbox" name="ranges-switch" class="onoffswitch-checkbox">
@@ -185,9 +240,9 @@
                 <span class="switch-handle"></span>
                 </label>
               </div>
-            </div>
+            </div> -->
             <div class="form-control switch-container">
-              <h3>Timers</h3>
+              <h3>Timer</h3>
               <div class="onoffswitch">
                 <input id="timer-switch" type="checkbox" name="timer-switch" class="onoffswitch-checkbox" checked>
                 <label class="onoffswitch-label" for="timer-switch">
@@ -198,7 +253,7 @@
             </div>
             <div class="form-control">
               <label for="exclude-pokemon">
-              <h3>Hide Pokémon</h3>
+              <h3>Pokemon verstecken</h3>
               <div style="max-height:165px;overflow-y:auto">
                 <select id="exclude-pokemon" multiple="multiple"></select>
               </div>
@@ -206,7 +261,7 @@
             </div>
           </div>
 
-          <h3>Location &amp; Search Settings</h3>
+          <!-- <h3>Location &amp; Search Settings</h3>
           <div>
             <div class="form-control switch-container" style="display:{{is_fixed}}" >
               <label for="next-location">
@@ -274,34 +329,26 @@
                 </label>
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <h3>Notification Settings</h3>
+          <h3>Benachrichtigungen</h3>
           <div>
             <div class="form-control">
               <label for="notify-pokemon">
-                <h3>Notify of Pokémon</h3>
+                <h3>Über Pokémon benachrichtigen</h3>
                 <div style="max-height:165px;overflow-y:auto">
                   <select id="notify-pokemon" multiple="multiple"></select>
                 </div>
               </label>
             </div>
             <div class="form-control">
-              <label for="notify-rarity">
-                <h3>Notify of Rarity</h3>
-                <div style="max-height:165px;overflow-y:auto">
-                  <select id="notify-rarity" multiple="multiple"></select>
-                </div>
-              </label>
-            </div>
-            <div class="form-control">
               <label for="notify-perfection">
-                <h3>Notify of Perfection</h3>
+                <h3>Über IV benachrichtigen</h3>
                 <input id="notify-perfection" type="text" name="notify-perfection" placeholder="Minimum perfection %"/>
               </label>
             </div>
             <div class="form-control switch-container">
-              <h3>Notify with sound</h3>
+              <h3>mit Ton?</h3>
               <div class="onoffswitch">
                 <input id="sound-switch" type="checkbox" name="sound-switch" class="onoffswitch-checkbox" checked>
                 <label class="onoffswitch-label" for="sound-switch">
@@ -312,14 +359,14 @@
             </div>
           </div>
 
-          <h3>Style Settings</h3>
+          <h3>Aussehen</h3>
           <div>
             <div class="form-control switch-container">
-              <h3>Map Style</h3>
+              <h3>Kartenstil</h3>
               <select id="map-style"></select>
             </div>
             <div class="form-control switch-container">
-              <h3>Icon Size</h3>
+              <h3>Icon Größe</h3>
               <select name="pokemon-icon-size" id="pokemon-icon-size">
                 <option value="-8">Small</option>
                 <option value="0">Normal</option>
@@ -328,16 +375,18 @@
               </select>
             </div>
             <div class="form-control switch-container">
-              <h3>Search Icon Marker</h3>
+              <h3>Scan-Marker</h3>
               <select name="iconmarker-style" id="iconmarker-style"></select>
             </div>
             <div class="form-control switch-container">
-              <h3>Gym Marker Style</h3>
+              <h3>Arena Icons</h3>
               <select name="gym-marker-style" id="gym-marker-style">
-                <option value='ingame'>In-Game</option>
-                <option value='shield'>Shield</option>
+                <option value='ingame'>PoGo</option>
+                <option value='shield'>Schild</option>
               </select>
-              <h3>Location Icon Marker</h3>
+            </div>
+            <div class="form-control switch-container">
+              <h3>Positions-Marker</h3>
               <select name="locationmarker-style" id="locationmarker-style"></select>
             </div>
           </div>
@@ -346,10 +395,10 @@
       <nav id="stats">
         <div class="switch-container">
           <div class="switch-container">
-            <div><center><a href="stats">Full Stats</a></center></div>
+            <div><center><a href="stats">Vollständige Statistik</a></center></div>
           </div>
           <div class="switch-container">
-            <center><h1 id="stats-ldg-label">Loading...</h1></center>
+            <center><h1 id="stats-ldg-label">Laden...</h1></center>
           </div>
           <div class="stats-label-container">
             <center><h1 id="stats-pkmn-label"></h1></center>
@@ -358,7 +407,7 @@
             <table id="pokemonList_table" class="display" cellspacing="0" width="100%">
               <thead>
                 <tr>
-                  <th>Icon</th> <th>Name</th> <th>Count</th> <th>%</th>
+                  <th>Icon</th> <th>Name</th> <th>Menge</th> <th>%</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -376,7 +425,7 @@
         </div>
       </nav>
       <nav id="gym-details">
-        <center><h1>Loading...</h1></center>
+        <center><h1>Laden...</h1></center>
       </nav>
       <div id="map"></div>
       <div class="fab" id="scan-here" style="display:none"></div>

@@ -963,8 +963,8 @@ var StoreOptions = {
         type: StoreTypes.Boolean
     },
     'hideTimersAtZoomLevel': {
-      default: 18,
-      type: StoreTypes.Number
+        default: 18,
+        type: StoreTypes.Number
     },
     'searchMarkerStyle': {
         default: 'google',

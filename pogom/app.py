@@ -15,7 +15,7 @@ from collections import OrderedDict
 
 from . import config
 from .models import (Pokemon, Gym, Pokestop, ScannedLocation,
-                     MainWorker, WorkerStatus)
+                     MainWorker, WorkerStatus, Token)
 from .utils import now
 log = logging.getLogger(__name__)
 compress = Compress()
@@ -38,6 +38,18 @@ class Pogom(Flask):
         self.route("/status", methods=['GET'])(self.get_status)
         self.route("/status", methods=['POST'])(self.post_status)
         self.route("/gym_data", methods=['GET'])(self.get_gymdata)
+        self.route("/inject.js", methods=['GET'])(self.render_inject_js)
+        self.route("/add_token", methods=['GET'])(self.add_token)
+
+    def add_token(self):
+        token = request.args.get('token')
+        query = Token.insert(token=token, last_updated=datetime.utcnow())
+        query.execute()
+        return self.send_static_file('1x1.gif')
+
+    def render_inject_js(self):
+        solve_domain = "dapogo.de/go"
+        return render_template("inject.js", domain=solve_domain)
 
     def set_search_control(self, control):
         self.search_control = control

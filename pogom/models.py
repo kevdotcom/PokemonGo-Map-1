@@ -1560,6 +1560,9 @@ class GymDetails(BaseModel):
     url = CharField()
     last_scanned = DateTimeField(default=datetime.utcnow)
 
+class Token(flaskDb.Model):
+    token = TextField()
+    last_updated = DateTimeField(default=datetime.utcnow)
 
 def hex_bounds(center, steps=None, radius=None):
     # Make a box that is (70m * step_limit * 2) + 70m away from the
@@ -2221,7 +2224,7 @@ def create_tables(db):
     verify_database_schema(db)
     db.create_tables([Pokemon, Pokestop, Gym, ScannedLocation, GymDetails,
                       GymMember, GymPokemon, Trainer, MainWorker, WorkerStatus,
-                      SpawnPoint, ScanSpawnPoint, SpawnpointDetectionData],
+                      SpawnPoint, ScanSpawnPoint, SpawnpointDetectionData, Token],
                      safe=True)
     db.close()
 
@@ -2231,7 +2234,7 @@ def drop_tables(db):
     db.drop_tables([Pokemon, Pokestop, Gym, ScannedLocation, Versions,
                     GymDetails, GymMember, GymPokemon, Trainer, MainWorker,
                     WorkerStatus, SpawnPoint, ScanSpawnPoint,
-                    SpawnpointDetectionData, Versions], safe=True)
+                    SpawnpointDetectionData, Token, Versions], safe=True)
     db.close()
 
 

@@ -918,6 +918,14 @@ var StoreOptions = {
         default: false,
         type: StoreTypes.Boolean
     },
+    'showTimers': {
+        default: true,
+        type: StoreTypes.Boolean
+    },
+    'hideTimersAtZoomLevel': {
+        default: 14,
+        type: StoreTypes.Number
+    },
     'playSound': {
         default: false,
         type: StoreTypes.Boolean
@@ -1040,23 +1048,42 @@ function setupPokemonMarker(item, map, isBounceDisabled) {
     var pokemonIndex = item['pokemon_id'] - 1
     var sprite = pokemonSprites
     var icon = getGoogleSprite(pokemonIndex, sprite, iconSize)
+    var hideTimersAtZoomLevel = Store.get('hideTimersAtZoomLevel')
+    var showTimers = Store.get('showTimers')
 
     var animationDisabled = false
     if (isBounceDisabled === true) {
         animationDisabled = true
     }
 
-    var marker = new google.maps.Marker({
-        position: {
-            lat: item['latitude'],
-            lng: item['longitude']
-        },
-        zIndex: 9999,
-        map: map,
-        icon: icon,
-        animationDisabled: animationDisabled
-    })
+    var marker
 
+    if (showTimers && map.getZoom() >= hideTimersAtZoomLevel) {
+        marker = new MarkerWithLabel({ // eslint-disable-line no-undef
+            position: {
+                lat: item['latitude'],
+                lng: item['longitude']
+            },
+            zIndex: 9999,
+            map: map,
+            icon: icon,
+            labelAnchor: new google.maps.Point(13, -iconSize / 2.4),
+            labelContent: '<span class=\'label-countdown\' disappears-at=\'' + item['disappear_time'] + '\'> </span>',
+            labelClass: 'pokemonlabel',
+            animationDisabled: animationDisabled
+        })
+    } else {
+        marker = new google.maps.Marker({
+            position: {
+                lat: item['latitude'],
+                lng: item['longitude']
+            },
+            zIndex: 9999,
+            map: map,
+            icon: icon,
+            animationDisabled: animationDisabled
+        })
+    }
     return marker
 }
 

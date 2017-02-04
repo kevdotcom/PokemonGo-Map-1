@@ -139,7 +139,7 @@ def captcha_solver_thread(args, account_queue, account_captchas, hash_key,
                   'status': 'error',
                   'method': 'manual',
                   'account': status['username'],
-                  'captcha': status['captcha'],
+                  'token_needed': 1,
                   'time': 0}
     if not token:
         token = token_request(args, status, captcha_url)
@@ -158,7 +158,7 @@ def captcha_solver_thread(args, account_queue, account_captchas, hash_key,
         log.info(status['message'])
         account_queue.put(account)
         wh_message['status'] = 'success'
-        wh_message['captcha'] = 0
+        wh_message['token_needed'] = 0
     else:
         status['message'] = (
             'Account {} failed verifyChallenge, putting back ' +
@@ -166,7 +166,7 @@ def captcha_solver_thread(args, account_queue, account_captchas, hash_key,
         log.warning(status['message'])
         account_captchas.append((status, account, captcha_url))
         wh_message['status'] = 'failure'
-        wh_message['captcha'] = 1
+        wh_message['token_needed'] = 1
 
     if args.webhooks:
         wh_queue.put(('captcha', wh_message))
@@ -196,7 +196,7 @@ def handle_captcha(args, status, api, account, account_failures,
                                   'status': 'encounter',
                                   'mode': 'disabled',
                                   'account': status['username'],
-                                  'captcha': 1,
+                                  'token_needed': 1,
                                   'time': 0}
                     whq.put(('captcha', wh_message))
                 return False
@@ -224,7 +224,7 @@ def handle_captcha(args, status, api, account, account_failures,
                                   'status': 'encounter',
                                   'mode': 'manual',
                                   'account': status['username'],
-                                  'captcha': 1,
+                                  'token_needed': 1,
                                   'time': args.manual_captcha_timeout}
                     whq.put(('captcha', wh_message))
                 return False
@@ -246,7 +246,7 @@ def automatic_captcha_solve(args, status, api, captcha_url, account, wh_queue):
                       'status': 'encounter',
                       'mode': '2captcha',
                       'account': status['username'],
-                      'captcha': 1,
+                      'token_needed': 1,
                       'time': 0}
         wh_queue.put(('captcha', wh_message))
 
@@ -277,7 +277,7 @@ def automatic_captcha_solve(args, status, api, captcha_url, account, wh_queue):
             log.info(status['message'])
             if args.webhooks:
                 wh_message['status'] = 'success'
-                wh_message['captcha'] = 0
+                wh_message['token_needed'] = 0
                 wh_message['time'] = time_elapsed
                 wh_queue.put(('captcha', wh_message))
 
@@ -289,7 +289,7 @@ def automatic_captcha_solve(args, status, api, captcha_url, account, wh_queue):
             log.info(status['message'])
             if args.webhooks:
                 wh_message['status'] = 'failure'
-                wh_message['captcha'] = 1
+                wh_message['token_needed'] = 1
                 wh_message['time'] = time_elapsed
                 wh_queue.put(('captcha', wh_message))
 

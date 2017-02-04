@@ -1638,9 +1638,12 @@ class GymDetails(BaseModel):
 class Token(flaskDb.Model):
     token = TextField()
     last_updated = DateTimeField(default=datetime.utcnow)
+    location = TextField()
 
     @staticmethod
     def get_valid(limit=15):
+        args = get_args()
+        solve_location = args.manual_captcha_name
         # Make sure we don't grab more than we can process
         if limit > 15:
             limit = 15
@@ -1651,7 +1654,7 @@ class Token(flaskDb.Model):
             with flaskDb.database.transaction():
                 query = (Token
                          .select()
-                         .where(Token.last_updated > valid_time)
+                         .where((Token.last_updated > valid_time) & (Token.location == solve_location))
                          .order_by(Token.last_updated.asc())
                          .limit(limit))
                 for t in query:

@@ -69,15 +69,14 @@ class Pogom(Flask):
 
     def render_inject_js(self):
         args = get_args()
-        return render_template("inject.js",
-                               domain=args.manual_captcha_domain,
-                               timer=args.manual_captcha_refresh)
+        return render_template("inject.js", domain=args.manual_captcha_domain, timer=args.manual_captcha_refresh)
 
     def submit_token(self):
         response = 'error'
         if request.form:
             token = request.form.get('token')
-            query = Token.insert(token=token, last_updated=datetime.utcnow())
+            loc = request.form.get('location')
+            query = Token.insert(token=token, last_updated=datetime.utcnow(), location=loc)
             query.execute()
             response = 'ok'
         r = make_response(response)

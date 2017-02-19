@@ -1109,6 +1109,21 @@ class MainWorker(BaseModel):
 
         return dict
 
+    def get_worker_stats(self, status_name):
+        worker_stats = (MainWorker
+                         .select(fn.SUM(MainWorker.accounts_working),
+                                 fn.SUM(MainWorker.accounts_captcha),
+                                 fn.SUM(MainWorker.accounts_failed))
+                         .where(MainWorker.worker_name == status_name)
+                         .scalar(as_tuple=True))
+        dict = {'working': 0, 'captcha': 0, 'failed': 0}
+        if worker_stats[0] is not None:
+            dict = {'working': int(worker_stats[0]),
+                    'captcha': int(worker_stats[1]),
+                    'failed': int(worker_stats[2])}
+
+        return dict
+
 
 class WorkerStatus(BaseModel):
     username = CharField(primary_key=True, max_length=50)

@@ -1654,12 +1654,8 @@ class GymDetails(BaseModel):
 
 class Token(flaskDb.Model):
     token = TextField()
-<<<<<<< HEAD
-    last_updated = DateTimeField(default=datetime.utcnow)
-    location = TextField()
-=======
     last_updated = DateTimeField(default=datetime.utcnow, index=True)
->>>>>>> 40aacb0f65184fe826093870fe88f104126af0f2
+    location = TextField()
 
     @staticmethod
     def get_valid(limit=15):
